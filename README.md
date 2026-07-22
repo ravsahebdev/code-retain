@@ -1,27 +1,30 @@
 # 🚀 CodeRetain
 
-CodeRetain is a modern coding question revision application that helps developers save, organize, and revise programming problems using a structured revision workflow.
+A modern coding question management and revision platform designed to help developers retain problem-solving knowledge through structured revision.
 
-Built with **HTML, CSS, and Vanilla JavaScript**, it provides a clean interface to manage coding questions, monitor learning progress, and build long-term retention.
+CodeRetain allows you to save coding questions, write your own solutions, maintain revision schedules, track progress, and build long-term coding memory with an intuitive and responsive interface.
 
----
+## 🌐 Live Demo
+
+🔗 https://ravsahebdev.github.io/code-retain/
 
 ## ✨ Features
 
-- 📚 Save coding questions with detailed notes
-- 🧠 Smart revision workflow
-- 📅 Custom revision intervals
-- ⭐ Favorite & Mastered questions
-- 📊 Interactive statistics dashboard
+- 📝 Save coding questions with detailed notes
+- 🧠 Structured revision workflow
+- 📅 Custom revision scheduling
+- ⭐ Favorite important questions
+- ✅ Mark questions as mastered
+- 📊 Interactive analytics dashboard
 - 📈 Progress tracking
-- 🔍 Search & Filter
-- 🏷️ Topic & Difficulty categorization
-- ⚡ XP & Streak system
-- 💾 LocalStorage persistence
+- 🔍 Powerful search & filtering
+- 🏷️ Topic & difficulty categorization
+- ⚡ XP & Daily Streak system
+- 💾 LocalStorage data persistence
 - 📤 Import & Export JSON
 - 📄 Export Markdown
-- 📱 Responsive Design
-- 🌙 Modern Dark UI
+- 📱 Fully Responsive Design
+- 🌙 Modern Glassmorphism UI
 
 ---
 
@@ -29,7 +32,7 @@ Built with **HTML, CSS, and Vanilla JavaScript**, it provides a clean interface 
 
 - HTML5
 - CSS3
-- Vanilla JavaScript (ES6)
+- JavaScript (ES6)
 - Chart.js
 - Prism.js
 - Font Awesome
@@ -37,36 +40,53 @@ Built with **HTML, CSS, and Vanilla JavaScript**, it provides a clean interface 
 
 ---
 
-## 📂 Project Structure
+## 🚀 Installation
 
-```text
-code-retain/
-├── index.html
-├── style.css
-├── app.js
-└── README.md
-```
-
----
-
-## 🚀 Getting Started
+Clone the repository
 
 ```bash
 git clone https://github.com/ravsahebdev/code-retain.git
 ```
 
-Open `index.html` in your browser.
+Go to the project directory
+
+```bash
+cd code-retain
+```
+
+Run the project by opening **index.html** in your browser.
 
 ---
 
-## 🎯 Future Improvements
+## 📂 Project Structure
+
+```
+code-retain/
+│── index.html
+│── style.css
+│── app.js
+└── README.md
+```
+
+---
+
+## 🎯 Future Enhancements
 
 - User Authentication
-- Cloud Sync
-- PWA Support
+- Cloud Synchronization
 - Multiple Revision Algorithms
-- Better Analytics
+- PWA Support
 - Theme Customization
+- Advanced Analytics
+- Online Backup
+
+---
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are always welcome.
+
+If you'd like to improve the project, feel free to fork the repository and submit a pull request.
 
 ---
 
@@ -74,8 +94,11 @@ Open `index.html` in your browser.
 
 **Ravsaheb Vagre**
 
-GitHub: https://github.com/ravsahebdev
+- GitHub: https://github.com/ravsahebdev
+- LinkedIn: https://www.linkedin.com/in/ravsaheb-vagre/
 
 ---
 
-⭐ If you found this project useful, consider giving it a Star.
+## ⭐ Support
+
+If you found this project useful, please consider giving it a **Star ⭐** on GitHub. It helps support the project and encourages future improvements.

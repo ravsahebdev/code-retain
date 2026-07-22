@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>CodeRetain</title>
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap"
+        rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- Prism.js for syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="app">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <i class="fas fa-brain"></i>
+                <span>CodeRetain</span>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" data-page="questions">
+                    <i class="fas fa-database"></i>
+                    <span>Questions</span>
+                </a>
+                <a href="#" class="nav-item" data-page="revision">
+                    <i class="fas fa-sync-alt"></i>
+                    <span>Revision</span>
+                    <span class="badge" id="revisionBadge">0</span>
+                </a>
+                <a href="#" class="nav-item" data-page="statistics">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Statistics</span>
+                </a>
+                <a href="#" class="nav-item" data-page="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="avatar">JD</div>
+                    <div>
+                        <div class="username">John Doe</div>
+                        <div class="user-level">Level 5 • Explorer</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="main-header">
+                <button class="mobile-toggle" id="mobileToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="header-right">
+                    <div class="xp-display">
+                        <i class="fas fa-bolt" style="color: #f59e0b;"></i>
+                        <span id="xpDisplay">0 XP</span>
+                    </div>
+                    <button class="icon-btn" id="notificationBtn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-dot"></span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Pages -->
+            <div class="page-container">
+                <!-- Dashboard -->
+                <div class="page active" id="page-dashboard">
+                    <div class="page-header">
+                        <h1>Dashboard</h1>
+                        <p>Welcome back! Here's your progress overview.</p>
+                    </div>
+
+                    <div class="stats-grid" id="statsGrid">
+                        <!-- Stats will be rendered here -->
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <div class="card glass">
+                            <h3>Progress Overview</h3>
+                            <div class="chart-wrapper">
+                                <canvas id="progressChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="card glass">
+                            <h3>Today's Overview</h3>
+                            <div class="today-stats" id="todayStats">
+                                <!-- Today stats will be rendered here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card glass mt-4">
+                        <h3>Recent Questions</h3>
+                        <div class="recent-questions" id="recentQuestions">
+                            <!-- Recent questions will be rendered here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Questions -->
+                <div class="page" id="page-questions">
+                    <div class="page-header">
+                        <div>
+                            <h1>Questions</h1>
+                            <p>Manage your saved coding questions</p>
+                        </div>
+                        <button class="btn-primary" id="addQuestionBtn">
+                            <i class="fas fa-plus"></i> Add Question
+                        </button>
+                    </div>
+
+                    <div class="search-filter-bar">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Search questions..." id="searchInput" />
+                        </div>
+                        <div class="filter-group">
+                            <select id="filterDifficulty" class="filter-select">
+                                <option value="">All</option>
+                                <option value="Easy">Easy</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Hard">Hard</option>
+                            </select>
+                            <select id="filterTopic" class="filter-select">
+                                <option value="">All Topics</option>
+                                <option value="Array">Array</option>
+                                <option value="String">String</option>
+                                <option value="Linked List">Linked List</option>
+                                <option value="Tree">Tree</option>
+                                <option value="Graph">Graph</option>
+                                <option value="DP">DP</option>
+                                <option value="React">React</option>
+                                <option value="Node">Node.js</option>
+                                <option value="CSS">CSS</option>
+                                <option value="JavaScript">JavaScript</option>
+                                <option value="Python">Python</option>
+                                <option value="Java">Java</option>
+                            </select>
+                            <select id="filterStatus" class="filter-select">
+                                <option value="">All Status</option>
+                                <option value="need-revision">Need Revision</option>
+                                <option value="mastered">Mastered</option>
+                                <option value="favorite">Favorites</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="questions-grid" id="questionsGrid">
+                        <!-- Questions will be rendered here -->
+                    </div>
+                </div>
+
+                <!-- Revision -->
+                <div class="page" id="page-revision">
+                    <div class="page-header">
+                        <h1>Today's Revision</h1>
+                        <p>Questions due for review</p>
+                    </div>
+
+                    <div class="revision-list" id="revisionList">
+                        <!-- Revision questions will be rendered here -->
+                    </div>
+                </div>
+
+                <!-- Statistics -->
+                <div class="page" id="page-statistics">
+                    <div class="page-header">
+                        <h1>Statistics</h1>
+                        <p>Track your learning journey</p>
+                    </div>
+
+                    <div class="stats-grid stats-grid-2">
+                        <div class="card glass">
+                            <h3>Questions by Topic</h3>
+                            <div class="chart-wrapper">
+                                <canvas id="topicChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="card glass">
+                            <h3>Difficulty Distribution</h3>
+                            <div class="chart-wrapper">
+                                <canvas id="difficultyChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card glass mt-4">
+                        <h3>Revision History</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="revisionHistoryChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings -->
+                <div class="page" id="page-settings">
+                    <div class="page-header">
+                        <h1>Settings</h1>
+                        <p>Manage your preferences and data</p>
+                    </div>
+
+                    <div class="settings-grid">
+                        <div class="card glass">
+                            <h3>Data Management</h3>
+                            <div class="settings-group">
+                                <button class="btn-secondary" id="exportJsonBtn">
+                                    <i class="fas fa-file-export"></i> Export JSON
+                                </button>
+                                <button class="btn-secondary" id="exportMarkdownBtn">
+                                    <i class="fas fa-file-alt"></i> Export Markdown
+                                </button>
+                                <button class="btn-secondary" id="importJsonBtn">
+                                    <i class="fas fa-file-import"></i> Import JSON
+                                </button>
+                                <input type="file" id="fileInput" accept=".json" style="display: none;" />
+                            </div>
+                        </div>
+
+                        <div class="card glass">
+                            <h3>Appearance</h3>
+                            <div class="settings-group">
+                                <label class="toggle-label">
+                                    <input type="checkbox" id="darkModeToggle" checked />
+                                    <span class="toggle-slider"></span>
+                                    Dark Mode
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="card glass">
+                            <h3>Revision Settings</h3>
+                            <div class="settings-group">
+                                <div class="setting-item">
+                                    <label>Revision Intervals (days)</label>
+                                    <div class="interval-inputs">
+                                        <input type="number" id="interval1" value="1" min="1" />
+                                        <input type="number" id="interval2" value="3" min="1" />
+                                        <input type="number" id="interval3" value="7" min="1" />
+                                        <input type="number" id="interval4" value="15" min="1" />
+                                        <input type="number" id="interval5" value="30" min="1" />
+                                        <input type="number" id="interval6" value="60" min="1" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card glass">
+                            <h3>Danger Zone</h3>
+                            <div class="settings-group">
+                                <button class="btn-danger" id="resetDataBtn">
+                                    <i class="fas fa-trash"></i> Reset All Data
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Question Modal -->
+    <div class="modal" id="questionModal">
+        <div class="modal-content glass">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add Question</h2>
+                <button class="modal-close" id="modalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="questionForm">
+                <input type="hidden" id="questionId" />
+
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="formTitle" required placeholder="Two Sum" />
+                </div>
+
+                <div class="form-group-row">
+                    <div class="form-group">
+                        <label>Difficulty</label>
+                        <select id="formDifficulty" required>
+                            <option value="Easy">Easy</option>
+                            <option value="Medium" selected>Medium</option>
+                            <option value="Hard">Hard</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Topic</label>
+                        <select id="formTopic" required>
+                            <option value="Array">Array</option>
+                            <option value="String">String</option>
+                            <option value="Linked List">Linked List</option>
+                            <option value="Tree">Tree</option>
+                            <option value="Graph">Graph</option>
+                            <option value="DP">DP</option>
+                            <option value="React">React</option>
+                            <option value="Node">Node.js</option>
+                            <option value="CSS">CSS</option>
+                            <option value="JavaScript">JavaScript</option>
+                            <option value="Python">Python</option>
+                            <option value="Java">Java</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Source</label>
+                    <select id="formSource">
+                        <option value="LeetCode">LeetCode</option>
+                        <option value="Interview">Interview</option>
+                        <option value="ChatGPT">ChatGPT</option>
+                        <option value="YouTube">YouTube</option>
+                        <option value="Custom">Custom</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Question Statement</label>
+                    <textarea id="formStatement" rows="3" placeholder="Write the question here..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Your Answer</label>
+                    <textarea id="formAnswer" rows="4" placeholder="Write your solution..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Detailed Explanation</label>
+                    <textarea id="formExplanation" rows="4" placeholder="Explain the solution..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Key Learning</label>
+                    <textarea id="formLearning" rows="3" placeholder="What did you learn?"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Mistakes Made</label>
+                    <textarea id="formMistakes" rows="3" placeholder="What mistakes did you make?"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Better Approach</label>
+                    <textarea id="formBetter" rows="3" placeholder="What's a better approach?"></textarea>
+                </div>
+
+                <div class="form-group-row">
+                    <div class="form-group">
+                        <label>Time Complexity</label>
+                        <input type="text" id="formTimeComplexity" placeholder="O(n)" />
+                    </div>
+                    <div class="form-group">
+                        <label>Space Complexity</label>
+                        <input type="text" id="formSpaceComplexity" placeholder="O(1)" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Tags (comma separated)</label>
+                    <input type="text" id="formTags" placeholder="array, hashmap, two-pointer" />
+                </div>
+
+                <div class="form-group-row">
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="formFavorite" /> Mark as Favorite
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="formMastered" /> Mark as Mastered
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="formCancel">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Question</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Revision Modal -->
+    <div class="modal" id="revisionModal">
+        <div class="modal-content glass" style="max-width: 700px;">
+            <div class="modal-header">
+                <h2>Revision</h2>
+                <button class="modal-close" id="revisionModalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="revisionContent">
+                <!-- Revision content will be rendered here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Capture Button -->
+    <button class="quick-capture" id="quickCapture">
+        <i class="fas fa-plus"></i>
+    </button>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-jsx.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+
+    <!-- Marked.js for markdown rendering -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

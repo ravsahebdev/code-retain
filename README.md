@@ -11,20 +11,16 @@ Designed with a modern glassmorphism interface, progress analytics, and an intui
 # ✨ Features
 
 ## 📚 Question Management
-
 - Save Coding Questions
 - Store Personal Solutions
 - Detailed Explanations
-- Learning Notes
-- Mistake Tracking
-- Better Approach Notes
+- Dedicated Full-Page Answer & Explanation View
+- Optional Fields (togglable): Key Learning, Mistakes, Better Approach, Complexity, Tags
 - Favorite Questions
 - Mastered Questions
-
----
+- Delete Questions
 
 ## 🧠 Smart Revision System
-
 - Structured Revision Workflow
 - Custom Revision Intervals
 - Daily Revision Queue
@@ -33,10 +29,7 @@ Designed with a modern glassmorphism interface, progress analytics, and an intui
 - Hint Generation
 - Revision Progress Tracking
 
----
-
 ## 📊 Dashboard & Analytics
-
 - Progress Dashboard
 - Interactive Charts
 - Topic-wise Statistics
@@ -46,31 +39,30 @@ Designed with a modern glassmorphism interface, progress analytics, and an intui
 - Daily Streak Tracking
 - Learning Progress Overview
 
----
-
 ## 🔍 Organization
-
 - Search Questions
 - Filter by Difficulty
 - Filter by Topic
 - Filter by Status
 - Category Management
-- Tag Support
+- Tag Support (optional, togglable)
 
----
+## 🎨 Personalization
+- Editable User Profile (name shown in sidebar)
+- Working Dark Mode / Light Mode Toggle (in sidebar)
+- Customizable Question Fields — turn extra fields on/off from Settings
+- Bilingual (English + Hindi) Help Tooltips
 
 ## 💾 Data Management
-
 - LocalStorage Persistence
 - Import JSON
 - Export JSON
 - Export Markdown
-- Data Reset
+- Data Reset with Styled Confirmation Dialog
 
 ---
 
 # 📚 Topics Covered
-
 - JavaScript
 - Data Organization
 - Revision Scheduling
@@ -85,7 +77,6 @@ Designed with a modern glassmorphism interface, progress analytics, and an intui
 ---
 
 # 🛠 Tech Stack
-
 - HTML5
 - CSS3
 - Vanilla JavaScript (ES6+)
@@ -97,7 +88,6 @@ Designed with a modern glassmorphism interface, progress analytics, and an intui
 ---
 
 # 📂 Project Structure
-
 ```text
 code-retain/
 │
@@ -110,35 +100,27 @@ code-retain/
 ---
 
 # 🚀 Getting Started
-
 Clone the repository
-
 ```bash
 git clone https://github.com/ravsahebdev/code-retain.git
 ```
-
 Navigate to the project folder.
-
 Open **index.html** in your preferred browser.
-
 No frameworks, build tools, or installation are required.
 
 ---
 
 # 🌐 Live Demo
-
 https://ravsahebdev.github.io/code-retain/
 
 ---
 
 # 💻 GitHub Repository
-
 https://github.com/ravsahebdev/code-retain
 
 ---
 
 # 🔑 Key Concepts Implemented
-
 - CRUD Operations
 - LocalStorage
 - Dynamic Rendering
@@ -148,12 +130,12 @@ https://github.com/ravsahebdev/code-retain
 - Interactive Charts
 - Responsive Design
 - Search & Filtering
+- Conditional Field Rendering (settings-driven UI)
 - Modern UI Design
 
 ---
 
 # 🎯 Learning Objectives
-
 This project was built to improve practical JavaScript development skills by creating a complete coding revision platform from scratch.
 
 The focus was on designing a real-world application that combines data management, structured revision, progress tracking, and responsive user experience while writing clean and maintainable JavaScript.
@@ -161,12 +143,10 @@ The focus was on designing a real-world application that combines data managemen
 ---
 
 # 📈 Future Improvements
-
 - User Authentication
 - Cloud Synchronization
 - Multiple Revision Algorithms
 - PWA Support
-- Theme Customization
 - Advanced Analytics
 - Online Backup
 - AI-powered Revision Suggestions
@@ -174,20 +154,14 @@ The focus was on designing a real-world application that combines data managemen
 ---
 
 # 👨‍💻 Author
-
 ## Ravsaheb Vagre
-
 **Full Stack Web Developer**
-
 - 🌐 GitHub: https://github.com/ravsahebdev
 - 💼 LinkedIn: https://www.linkedin.com/in/ravsaheb-vagre-47b86a35a
 
 ---
 
 ## ⭐ Support
-
 If you found this project helpful or learned something from it, consider giving this repository a **Star ⭐**.
 
 Your support motivates me to continue building and sharing more projects.
-
----

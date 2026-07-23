@@ -3,6 +3,16 @@
 // ============================================================
 const DEFAULT_INTERVALS = [1, 3, 7, 15, 30, 60];
 
+function escapeHtml(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
 class QuestionVault {
     constructor() {
         this.questions = [];
@@ -19,11 +29,14 @@ class QuestionVault {
                 this.xp = parsed.xp || 0;
                 this.streak = parsed.streak || 0;
                 this.lastActivity = parsed.lastActivity || null;
+                this.username = parsed.username || '';
+                this.theme = parsed.theme || 'dark';
+                this.optionalFields = Object.assign(this.defaultOptionalFields(), parsed.optionalFields || {});
             } else {
-                this.initializeSampleData();
+                this.initializeEmptyData();
             }
         } catch (e) {
-            this.initializeSampleData();
+            this.initializeEmptyData();
         }
     }
 
@@ -32,91 +45,33 @@ class QuestionVault {
             questions: this.questions,
             xp: this.xp || 0,
             streak: this.streak || 0,
-            lastActivity: this.lastActivity || null
+            lastActivity: this.lastActivity || null,
+            username: this.username || '',
+            theme: this.theme || 'dark',
+            optionalFields: this.optionalFields || this.defaultOptionalFields()
         }));
     }
 
-    initializeSampleData() {
-        this.questions = [
-            {
-                id: '1',
-                title: 'Two Sum',
-                difficulty: 'Easy',
-                topic: 'Array',
-                source: 'LeetCode',
-                statement: 'Given an array of integers nums and an integer target, return indices of the two numbers that add up to target.',
-                answer: 'function twoSum(nums, target) {\n  const map = {};\n  for (let i = 0; i < nums.length; i++) {\n    const complement = target - nums[i];\n    if (complement in map) {\n      return [map[complement], i];\n    }\n    map[nums[i]] = i;\n  }\n  return [];\n}',
-                explanation: 'Use a hash map to store each number and its index. For each number, check if its complement exists in the map.',
-                learning: 'Hash maps are great for O(1) lookups.',
-                mistakes: 'Initially tried brute force O(n²) approach.',
-                better: 'Use hash map for O(n) time complexity.',
-                timeComplexity: 'O(n)',
-                spaceComplexity: 'O(n)',
-                tags: ['array', 'hashmap'],
-                favorite: false,
-                mastered: false,
-                createdAt: new Date(Date.now() - 7 * 86400000).toISOString(),
-                lastRevised: null,
-                revisionCount: 0,
-                revisionIndex: 0,
-                nextRevision: new Date(Date.now() - 1 * 86400000).toISOString(),
-                confidence: null,
-                hints: ['Use a hash map to store complements.', 'Iterate through the array once.']
-            },
-            {
-                id: '2',
-                title: 'Valid Parentheses',
-                difficulty: 'Medium',
-                topic: 'String',
-                source: 'LeetCode',
-                statement: 'Given a string containing just the characters (, ), {, }, [, ], determine if the input string is valid.',
-                answer: 'function isValid(s) {\n  const stack = [];\n  const map = {\n    "(": ")",\n    "{": "}",\n    "[": "]" \n  };\n  for (const char of s) {\n    if (char in map) {\n      stack.push(char);\n    } else {\n      const top = stack.pop();\n      if (map[top] !== char) return false;\n    }\n  }\n  return stack.length === 0;\n}',
-                explanation: 'Use a stack to track opening brackets. When a closing bracket appears, check if it matches the top of the stack.',
-                learning: 'Stacks are perfect for matching parentheses.',
-                mistakes: 'Forgot to check if stack is empty at the end.',
-                better: 'The stack approach is optimal for this problem.',
-                timeComplexity: 'O(n)',
-                spaceComplexity: 'O(n)',
-                tags: ['string', 'stack'],
-                favorite: false,
-                mastered: false,
-                createdAt: new Date(Date.now() - 3 * 86400000).toISOString(),
-                lastRevised: null,
-                revisionCount: 0,
-                revisionIndex: 0,
-                nextRevision: new Date().toISOString(),
-                confidence: null,
-                hints: ['Use a stack data structure.', 'Create a map of matching pairs.']
-            },
-            {
-                id: '3',
-                title: 'Merge Two Sorted Lists',
-                difficulty: 'Easy',
-                topic: 'Linked List',
-                source: 'LeetCode',
-                statement: 'Merge two sorted linked lists and return it as a sorted list.',
-                answer: 'function mergeLists(l1, l2) {\n  const dummy = { val: 0, next: null };\n  let tail = dummy;\n  while (l1 && l2) {\n    if (l1.val <= l2.val) {\n      tail.next = l1;\n      l1 = l1.next;\n    } else {\n      tail.next = l2;\n      l2 = l2.next;\n    }\n    tail = tail.next;\n  }\n  tail.next = l1 || l2;\n  return dummy.next;\n}',
-                explanation: 'Use a dummy head and a tail pointer. Compare nodes and attach the smaller one.',
-                learning: 'Dummy heads simplify linked list operations.',
-                mistakes: 'Forgot to handle edge cases.',
-                better: 'The iterative approach is clean and efficient.',
-                timeComplexity: 'O(n + m)',
-                spaceComplexity: 'O(1)',
-                tags: ['linked-list', 'merge'],
-                favorite: true,
-                mastered: false,
-                createdAt: new Date(Date.now() - 1 * 86400000).toISOString(),
-                lastRevised: null,
-                revisionCount: 0,
-                revisionIndex: 0,
-                nextRevision: new Date().toISOString(),
-                confidence: null,
-                hints: ['Use a dummy head.', 'Compare the heads of both lists.']
-            }
-        ];
-        this.xp = 150;
-        this.streak = 3;
-        this.lastActivity = new Date().toISOString();
+    defaultOptionalFields() {
+        return {
+            learning: false,
+            mistakes: false,
+            better: false,
+            complexity: false,
+            tags: false
+        };
+    }
+
+    // Starts the user off with a clean, empty vault - no pre-filled tasks.
+    // Questions only appear once the user actually creates their own.
+    initializeEmptyData() {
+        this.questions = [];
+        this.xp = 0;
+        this.streak = 0;
+        this.lastActivity = null;
+        this.username = '';
+        this.theme = 'dark';
+        this.optionalFields = this.defaultOptionalFields();
         this.save();
     }
 
@@ -376,16 +331,9 @@ class QuestionVault {
     }
 
     reset() {
-        if (confirm('Are you sure you want to delete all data?')) {
-            localStorage.removeItem('coderetain_data');
-            this.questions = [];
-            this.xp = 0;
-            this.streak = 0;
-            this.lastActivity = null;
-            this.initializeSampleData();
-            return true;
-        }
-        return false;
+        localStorage.removeItem('coderetain_data');
+        this.initializeEmptyData();
+        return true;
     }
 }
 
@@ -407,6 +355,7 @@ class App {
     }
 
     init() {
+        this.initTheme();
         this.bindEvents();
         this.renderDashboard();
         this.renderQuestions();
@@ -415,6 +364,9 @@ class App {
         this.updateBadges();
         this.updateXP();
         this.setupIntervalDefaults();
+        this.updateSidebarProfile();
+        this.applyOptionalFieldVisibility();
+        this.setupOptionalFieldToggles();
     }
 
     bindEvents() {
@@ -479,15 +431,74 @@ class App {
             this.importJSON(e);
         });
         document.getElementById('resetDataBtn').addEventListener('click', () => {
-            if (this.vault.reset()) {
-                this.refreshAll();
-            }
+            this.showConfirm(
+                'Delete all data?',
+                "This will permanently remove every saved question, your XP, streak, and settings. Once deleted, this can't be recovered.",
+                'Yes, delete everything',
+                () => {
+                    this.vault.reset();
+                    this.refreshAll();
+                    this.initTheme();
+                    this.updateSidebarProfile();
+                    document.getElementById('usernameInput').value = '';
+                    this.syncOptionalFieldCheckboxes();
+                    this.applyOptionalFieldVisibility();
+                    this.showNotification('🗑️ All data deleted.');
+                }
+            );
         });
 
         document.querySelectorAll('.interval-inputs input').forEach(input => {
             input.addEventListener('change', () => {
                 this.vault.save();
             });
+        });
+
+        // ===== Theme toggle (sidebar) =====
+        document.getElementById('darkModeToggleSidebar').addEventListener('change', (e) => {
+            this.setTheme(e.target.checked ? 'dark' : 'light');
+        });
+
+        // ===== Profile: username =====
+        const usernameInput = document.getElementById('usernameInput');
+        usernameInput.addEventListener('input', () => {
+            this.vault.username = usernameInput.value;
+            this.vault.save();
+            this.updateSidebarProfile();
+        });
+
+        // ===== Revision settings info button =====
+        document.getElementById('revisionInfoBtn').addEventListener('click', () => {
+            this.showInfoModal(
+                'Revision Intervals',
+                `<h4>English</h4>
+                <p>These numbers decide when a saved question comes back to you for review. The 1st number is how many days until the first revision, the 2nd is how many days after that one, and so on. Answer confidently during a revision and you move further down the list — meaning longer gaps between reviews. Struggle with a question and it comes back to you sooner.</p>
+                <h4>हिंदी</h4>
+                <p>ये नंबर तय करते हैं कि कोई saved question दोबारा revise करने के लिए कब वापस आएगा। पहला नंबर बताता है कि पहला revision कितने दिन बाद होगा, दूसरा नंबर उसके कितने दिन बाद अगला होगा, और इसी तरह आगे। अगर आप revision में confident जवाब देते हो, तो अगली बार interval बड़ा हो जाता है यानी question देर से वापस आएगा। अगर जवाब सही से नहीं आता, तो वो जल्दी वापस आ जाएगा।</p>`
+            );
+        });
+
+        // ===== Fullpage answer/explanation views =====
+        document.getElementById('answerPageClose').addEventListener('click', () => {
+            document.getElementById('answerPage').classList.remove('open');
+        });
+        document.getElementById('explanationPageClose').addEventListener('click', () => {
+            document.getElementById('explanationPage').classList.remove('open');
+        });
+
+        // ===== Generic confirm modal =====
+        document.getElementById('confirmModalCancel').addEventListener('click', () => {
+            this.closeConfirm();
+        });
+        document.getElementById('confirmModalConfirm').addEventListener('click', () => {
+            const cb = this._confirmCallback;
+            this.closeConfirm();
+            if (cb) cb();
+        });
+
+        // ===== Generic info modal =====
+        document.getElementById('infoModalClose').addEventListener('click', () => {
+            document.getElementById('infoModal').classList.remove('open');
         });
 
         document.addEventListener('click', (e) => {
@@ -741,7 +752,6 @@ class App {
                         <div class="q-meta">
                             <span class="tag-difficulty tag-${q.difficulty.toLowerCase()}">${q.difficulty}</span>
                             <span class="tag">${q.topic}</span>
-                            <span class="tag">${q.source}</span>
                         </div>
                         <div style="font-size: 13px; color: var(--text-secondary); margin: 6px 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
                             ${q.statement || 'No statement provided.'}
@@ -868,19 +878,19 @@ class App {
                                     <div class="answer-reveal" style="border-left-color: var(--accent-blue); background: rgba(59, 130, 246, 0.08);">${q.explanation}</div>
                                 </div>
                             ` : ''}
-                            ${q.learning ? `
+                            ${(this.vault.optionalFields || {}).learning && q.learning ? `
                                 <div style="margin: 12px 0;">
                                     <strong style="font-size: 13px;">Key Learning:</strong>
                                     <div class="answer-reveal" style="border-left-color: var(--accent-orange); background: rgba(245, 158, 11, 0.08);">${q.learning}</div>
                                 </div>
                             ` : ''}
-                            ${q.better ? `
+                            ${(this.vault.optionalFields || {}).better && q.better ? `
                                 <div style="margin: 12px 0;">
                                     <strong style="font-size: 13px;">Better Approach:</strong>
                                     <div class="answer-reveal" style="border-left-color: var(--accent-green); background: rgba(16, 185, 129, 0.08);">${q.better}</div>
                                 </div>
                             ` : ''}
-                            ${q.timeComplexity || q.spaceComplexity ? `
+                            ${(this.vault.optionalFields || {}).complexity && (q.timeComplexity || q.spaceComplexity) ? `
                                 <div style="margin: 12px 0; display: flex; gap: 10px; flex-wrap: wrap;">
                                     ${q.timeComplexity ? `<span class="tag" style="font-size: 11px;">Time: ${q.timeComplexity}</span>` : ''}
                                     ${q.spaceComplexity ? `<span class="tag" style="font-size: 11px;">Space: ${q.spaceComplexity}</span>` : ''}
@@ -1121,7 +1131,6 @@ class App {
             document.getElementById('formTitle').value = data.title || '';
             document.getElementById('formDifficulty').value = data.difficulty || 'Medium';
             document.getElementById('formTopic').value = data.topic || 'Array';
-            document.getElementById('formSource').value = data.source || 'LeetCode';
             document.getElementById('formStatement').value = data.statement || '';
             document.getElementById('formAnswer').value = data.answer || '';
             document.getElementById('formExplanation').value = data.explanation || '';
@@ -1131,8 +1140,6 @@ class App {
             document.getElementById('formTimeComplexity').value = data.timeComplexity || '';
             document.getElementById('formSpaceComplexity').value = data.spaceComplexity || '';
             document.getElementById('formTags').value = (data.tags || []).join(', ');
-            document.getElementById('formFavorite').checked = data.favorite || false;
-            document.getElementById('formMastered').checked = data.mastered || false;
         } else {
             title.textContent = 'Add Question';
             this.editingId = null;
@@ -1140,9 +1147,9 @@ class App {
             document.getElementById('questionId').value = '';
             document.getElementById('formDifficulty').value = 'Medium';
             document.getElementById('formTopic').value = 'Array';
-            document.getElementById('formSource').value = 'LeetCode';
         }
 
+        this.applyOptionalFieldVisibility();
         modal.classList.add('open');
     }
 
@@ -1156,19 +1163,23 @@ class App {
             title: document.getElementById('formTitle').value.trim(),
             difficulty: document.getElementById('formDifficulty').value,
             topic: document.getElementById('formTopic').value,
-            source: document.getElementById('formSource').value,
             statement: document.getElementById('formStatement').value.trim(),
             answer: document.getElementById('formAnswer').value.trim(),
-            explanation: document.getElementById('formExplanation').value.trim(),
-            learning: document.getElementById('formLearning').value.trim(),
-            mistakes: document.getElementById('formMistakes').value.trim(),
-            better: document.getElementById('formBetter').value.trim(),
-            timeComplexity: document.getElementById('formTimeComplexity').value.trim(),
-            spaceComplexity: document.getElementById('formSpaceComplexity').value.trim(),
-            tags: document.getElementById('formTags').value.split(',').map(t => t.trim()).filter(Boolean),
-            favorite: document.getElementById('formFavorite').checked,
-            mastered: document.getElementById('formMastered').checked
+            explanation: document.getElementById('formExplanation').value.trim()
         };
+
+        // Only persist the extra fields the user has turned on in Settings.
+        const of = this.vault.optionalFields || {};
+        if (of.learning) data.learning = document.getElementById('formLearning').value.trim();
+        if (of.mistakes) data.mistakes = document.getElementById('formMistakes').value.trim();
+        if (of.better) data.better = document.getElementById('formBetter').value.trim();
+        if (of.complexity) {
+            data.timeComplexity = document.getElementById('formTimeComplexity').value.trim();
+            data.spaceComplexity = document.getElementById('formSpaceComplexity').value.trim();
+        }
+        if (of.tags) {
+            data.tags = document.getElementById('formTags').value.split(',').map(t => t.trim()).filter(Boolean);
+        }
 
         if (!data.title) {
             this.showNotification('Please enter a title.');
@@ -1176,9 +1187,13 @@ class App {
         }
 
         if (this.editingId) {
+            // favorite/mastered are managed from the question detail view, not this form -
+            // leaving them out of `data` means updateQuestion won't touch them.
             this.vault.updateQuestion(this.editingId, data);
             this.showNotification('✅ Question updated!');
         } else {
+            data.favorite = false;
+            data.mastered = false;
             this.vault.addQuestion(data);
             this.showNotification('✅ Question saved! +10 XP');
         }
@@ -1190,7 +1205,146 @@ class App {
     viewQuestion(id) {
         const q = this.vault.questions.find(q => q.id === id);
         if (!q) return;
-        this.openModal(q);
+        this.openDetailModal(q);
+    }
+
+    // ===== QUESTION DETAIL (view-only) =====
+    openDetailModal(q) {
+        this.renderQuestionDetail(q);
+        document.getElementById('questionDetailModal').classList.add('open');
+    }
+
+    closeDetailModal() {
+        document.getElementById('questionDetailModal').classList.remove('open');
+    }
+
+    renderQuestionDetail(id) {
+        // Accept either an id or a question object for convenience.
+        const q = typeof id === 'string' ? this.vault.questions.find(x => x.id === id) : id;
+        if (!q) return;
+
+        const of = this.vault.optionalFields || {};
+        const extraSection = (label, value, colorVar) => `
+            <div class="detail-section">
+                <h4>${label}</h4>
+                <div class="answer-reveal" style="border-left-color: var(${colorVar});">${escapeHtml(value)}</div>
+            </div>
+        `;
+
+        let extraHtml = '';
+        if (of.learning && q.learning) extraHtml += extraSection('Key Learning', q.learning, '--accent-orange');
+        if (of.mistakes && q.mistakes) extraHtml += extraSection('Mistakes Made', q.mistakes, '--accent-red');
+        if (of.better && q.better) extraHtml += extraSection('Better Approach', q.better, '--accent-green');
+        if (of.complexity && (q.timeComplexity || q.spaceComplexity)) {
+            extraHtml += `
+                <div class="detail-section">
+                    <h4>Complexity</h4>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        ${q.timeComplexity ? `<span class="tag">Time: ${escapeHtml(q.timeComplexity)}</span>` : ''}
+                        ${q.spaceComplexity ? `<span class="tag">Space: ${escapeHtml(q.spaceComplexity)}</span>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+        if (of.tags && q.tags && q.tags.length) {
+            extraHtml += `
+                <div class="detail-section">
+                    <h4>Tags</h4>
+                    <div class="q-tags">${q.tags.map(t => `<span class="tag">#${escapeHtml(t)}</span>`).join('')}</div>
+                </div>
+            `;
+        }
+
+        const html = `
+            <div class="modal-header">
+                <h2>${escapeHtml(q.title)}</h2>
+                <button class="modal-close" id="detailModalClose"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="detail-tags">
+                <span class="tag-difficulty tag-${q.difficulty.toLowerCase()}">${q.difficulty}</span>
+                <span class="tag">${escapeHtml(q.topic)}</span>
+            </div>
+            <div class="detail-section">
+                <h4>Question Statement</h4>
+                <div class="question-text">${q.statement ? escapeHtml(q.statement) : 'No statement provided.'}</div>
+            </div>
+            <div class="detail-open-cards">
+                <button class="detail-open-card" id="openAnswerBtn">
+                    <i class="fas fa-code"></i>
+                    <span>Your Answer</span>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                <button class="detail-open-card" id="openExplanationBtn">
+                    <i class="fas fa-book-open"></i>
+                    <span>Detailed Explanation</span>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+            ${extraHtml}
+            <div class="status-toggle-row">
+                <button class="status-toggle-btn ${q.favorite ? 'active-fav' : ''}" id="toggleFavBtn">
+                    <i class="fas fa-star"></i> ${q.favorite ? 'Favorited' : 'Mark as Favorite'}
+                </button>
+                <button class="status-toggle-btn ${q.mastered ? 'active-mastered' : ''}" id="toggleMasteredBtn">
+                    <i class="fas fa-check-circle"></i> ${q.mastered ? 'Mastered' : 'Mark as Mastered'}
+                </button>
+            </div>
+            <div class="form-actions">
+                <button class="btn-danger" id="detailDeleteBtn"><i class="fas fa-trash"></i> Delete</button>
+                <button class="btn-primary" id="detailEditBtn"><i class="fas fa-edit"></i> Edit</button>
+            </div>
+        `;
+
+        document.getElementById('questionDetailContent').innerHTML = html;
+
+        document.getElementById('detailModalClose').addEventListener('click', () => this.closeDetailModal());
+        document.getElementById('openAnswerBtn').addEventListener('click', () => this.openAnswerPage(q));
+        document.getElementById('openExplanationBtn').addEventListener('click', () => this.openExplanationPage(q));
+        document.getElementById('toggleFavBtn').addEventListener('click', () => {
+            this.vault.toggleFavorite(q.id);
+            const updated = this.vault.questions.find(x => x.id === q.id);
+            this.renderQuestionDetail(updated);
+            this.refreshAll();
+        });
+        document.getElementById('toggleMasteredBtn').addEventListener('click', () => {
+            this.vault.toggleMastered(q.id);
+            const updated = this.vault.questions.find(x => x.id === q.id);
+            this.renderQuestionDetail(updated);
+            this.refreshAll();
+        });
+        document.getElementById('detailEditBtn').addEventListener('click', () => {
+            this.closeDetailModal();
+            this.openModal(q);
+        });
+        document.getElementById('detailDeleteBtn').addEventListener('click', () => {
+            this.showConfirm(
+                'Delete this question?',
+                `"${q.title}" will be permanently removed along with its revision history. This can't be undone.`,
+                'Yes, delete it',
+                () => {
+                    this.vault.deleteQuestion(q.id);
+                    this.closeDetailModal();
+                    this.refreshAll();
+                    this.showNotification('🗑️ Question deleted.');
+                }
+            );
+        });
+    }
+
+    // ===== Answer / Explanation full-page views =====
+    openAnswerPage(q) {
+        const content = document.getElementById('answerPageContent');
+        content.innerHTML = `<div class="answer-reveal"><pre style="white-space: pre-wrap; margin: 0; background: none; border: none; padding: 0;"><code class="language-javascript">${escapeHtml(q.answer || 'No answer provided yet.')}</code></pre></div>`;
+        document.getElementById('answerPage').classList.add('open');
+        if (window.Prism) {
+            setTimeout(() => Prism.highlightAllUnder(content), 0);
+        }
+    }
+
+    openExplanationPage(q) {
+        const content = document.getElementById('explanationPageContent');
+        content.innerHTML = `<div class="answer-reveal" style="border-left-color: var(--accent-blue); background: rgba(59, 130, 246, 0.08); white-space: pre-wrap;">${escapeHtml(q.explanation || 'No explanation provided yet.')}</div>`;
+        document.getElementById('explanationPage').classList.add('open');
     }
 
     // ===== EXPORT/IMPORT =====
@@ -1216,7 +1370,6 @@ class App {
             md += `## ${i + 1}. ${q.title}\n\n`;
             md += `**Difficulty**: ${q.difficulty}\n`;
             md += `**Topic**: ${q.topic}\n`;
-            md += `**Source**: ${q.source}\n`;
             md += `**Created**: ${new Date(q.createdAt).toLocaleDateString()}\n\n`;
             md += `### Statement\n${q.statement || 'N/A'}\n\n`;
             md += `### Answer\n\`\`\`\n${q.answer || 'N/A'}\n\`\`\`\n\n`;
@@ -1280,6 +1433,117 @@ class App {
             const input = document.getElementById(`interval${i + 1}`);
             if (input) input.value = val;
         });
+    }
+
+    // ===== THEME =====
+    initTheme() {
+        const theme = this.vault.theme || 'dark';
+        this.applyTheme(theme, false);
+    }
+
+    setTheme(theme) {
+        this.vault.theme = theme;
+        this.vault.save();
+        this.applyTheme(theme, true);
+    }
+
+    applyTheme(theme, animate) {
+        document.documentElement.setAttribute('data-theme', theme);
+        const toggle = document.getElementById('darkModeToggleSidebar');
+        if (toggle) toggle.checked = theme === 'dark';
+        const label = document.getElementById('themeToggleLabel');
+        if (label) {
+            label.innerHTML = theme === 'dark'
+                ? '<i class="fas fa-moon"></i> Dark Mode'
+                : '<i class="fas fa-sun"></i> Light Mode';
+        }
+    }
+
+    // ===== SIDEBAR PROFILE =====
+    updateSidebarProfile() {
+        const name = (this.vault.username || '').trim();
+        const usernameEl = document.getElementById('sidebarUsername');
+        const avatarEl = document.getElementById('sidebarAvatar');
+        const levelEl = document.getElementById('sidebarLevel');
+        const usernameInput = document.getElementById('usernameInput');
+
+        usernameEl.textContent = name || 'Guest';
+        avatarEl.textContent = name ? name.trim().slice(0, 2).toUpperCase() : 'U';
+
+        const level = this.vault.getLevel();
+        levelEl.textContent = `Level ${level.level} • ${level.name}`;
+
+        if (usernameInput && usernameInput.value !== name) {
+            usernameInput.value = name;
+        }
+    }
+
+    // ===== OPTIONAL (EXTRA) QUESTION FIELDS =====
+    applyOptionalFieldVisibility() {
+        const of = this.vault.optionalFields || {};
+        document.querySelectorAll('.optional-field').forEach(el => {
+            const field = el.dataset.field;
+            const shown = el.classList.contains('form-group-row') ? 'grid' : 'block';
+            el.style.display = of[field] ? shown : 'none';
+        });
+    }
+
+    syncOptionalFieldCheckboxes() {
+        const of = this.vault.optionalFields || {};
+        const map = {
+            fieldLearning: 'learning',
+            fieldMistakes: 'mistakes',
+            fieldBetter: 'better',
+            fieldComplexity: 'complexity',
+            fieldTags: 'tags'
+        };
+        Object.keys(map).forEach(elId => {
+            const el = document.getElementById(elId);
+            if (el) el.checked = !!of[map[elId]];
+        });
+    }
+
+    setupOptionalFieldToggles() {
+        this.syncOptionalFieldCheckboxes();
+        const map = {
+            fieldLearning: 'learning',
+            fieldMistakes: 'mistakes',
+            fieldBetter: 'better',
+            fieldComplexity: 'complexity',
+            fieldTags: 'tags'
+        };
+        Object.keys(map).forEach(elId => {
+            const el = document.getElementById(elId);
+            if (!el || el.dataset.bound) return;
+            el.dataset.bound = 'true';
+            el.addEventListener('change', () => {
+                if (!this.vault.optionalFields) this.vault.optionalFields = this.vault.defaultOptionalFields();
+                this.vault.optionalFields[map[elId]] = el.checked;
+                this.vault.save();
+                this.applyOptionalFieldVisibility();
+            });
+        });
+    }
+
+    // ===== GENERIC CONFIRM MODAL =====
+    showConfirm(title, message, confirmText, onConfirm) {
+        document.getElementById('confirmModalTitle').textContent = title;
+        document.getElementById('confirmModalMessage').textContent = message;
+        document.getElementById('confirmModalConfirm').textContent = confirmText || 'Delete';
+        this._confirmCallback = onConfirm;
+        document.getElementById('confirmModal').classList.add('open');
+    }
+
+    closeConfirm() {
+        document.getElementById('confirmModal').classList.remove('open');
+        this._confirmCallback = null;
+    }
+
+    // ===== GENERIC INFO MODAL =====
+    showInfoModal(title, bodyHtml) {
+        document.getElementById('infoModalTitle').textContent = title;
+        document.getElementById('infoModalBody').innerHTML = bodyHtml;
+        document.getElementById('infoModal').classList.add('open');
     }
 
     showNotification(msg) {

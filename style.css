@@ -1536,12 +1536,8 @@
                 gap: 12px;
             }
 
-            /* .chart-wrapper canvas { */
-                /* max-height: 160px; */
-            /* } */
-
             .chart-wrapper {
-                height: 180px;
+                height: 170px;
             }
 
             .card {

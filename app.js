@@ -1,7 +1,7 @@
 // ============================================================
 // DATA LAYER
 // ============================================================
-const DEFAULT_INTERVALS = [1, 3, 7, 15, 30, 60];
+// const DEFAULT_INTERVALS = [1, 3, 7, 15, 30, 60];
 
 function escapeHtml(str) {
     if (str === null || str === undefined) return '';
